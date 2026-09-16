@@ -37,7 +37,7 @@ export async function login(formData: FormData) {
     return { error: 'Access denied. Account not found in official registry.' }
   }
   
-  if (official.role === 'secretary' && official.status === 'pending') {
+  if (official.status === 'pending') {
     redirect('/pending')
   }
   
