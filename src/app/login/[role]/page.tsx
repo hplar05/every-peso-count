@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
 import { login } from '../actions'
 import { use } from 'react'
+import { toast } from 'sonner'
 
 export default function LoginPage({ params }: { params: Promise<{ role: string }> }) {
   const resolvedParams = use(params)
@@ -37,9 +38,14 @@ export default function LoginPage({ params }: { params: Promise<{ role: string }
     startTransition(async () => {
       try {
         const res = await login(formData)
-        if (res?.error) setError(res.error)
+        if (res?.error) {
+          setError(res.error)
+          toast.error(res.error)
+        }
       } catch {
-        setError('An unexpected error occurred. Please try again.')
+        const msg = 'An unexpected error occurred. Please try again.'
+        setError(msg)
+        toast.error(msg)
       }
     })
   }

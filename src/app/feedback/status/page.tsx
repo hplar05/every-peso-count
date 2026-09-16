@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { checkFeedbackStatus } from '../actions'
 import Link from 'next/link'
 import { ArrowLeft, Search, Clock, FileText, CheckCircle2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 export default function CheckFeedbackStatusPage() {
   const [error, setError] = useState<string | null>(null)
@@ -20,14 +21,17 @@ export default function CheckFeedbackStatusPage() {
     startTransition(async () => {
       try {
         const res = await checkFeedbackStatus(formData)
-        
         if (res?.error) {
           setError(res.error)
+          toast.error(res.error)
         } else if (res?.success) {
           setResult(res.data)
+          toast.success('Tracking record found.')
         }
       } catch (err) {
-        setError('An unexpected error occurred while checking status.')
+        const msg = 'An unexpected error occurred while checking status.'
+        setError(msg)
+        toast.error(msg)
       }
     })
   }

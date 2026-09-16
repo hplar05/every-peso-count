@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { createSession } from '../actions'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+import { toast } from 'sonner'
 
 const initialState: any = { error: null, success: false, id: null }
 
@@ -13,7 +14,10 @@ export default function NewSessionPage() {
   const [state, formAction, isPending] = useActionState(async (prevState: any, formData: FormData) => {
     const res = await createSession(formData)
     if (res.success && res.id) {
+      toast.success('Session created successfully.')
       router.push(`/admin/attendance/${res.id}`)
+    } else if (res.error) {
+      toast.error(res.error)
     }
     return res
   }, initialState)

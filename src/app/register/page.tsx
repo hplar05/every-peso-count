@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
 import { register } from './actions'
+import { toast } from 'sonner'
 
 export default function RegisterPage() {
   const [name, setName] = useState('')
@@ -30,9 +31,16 @@ export default function RegisterPage() {
     startTransition(async () => {
       try {
         const res = await register(formData)
-        if (res?.error) setError(res.error)
+        if (res?.error) {
+          setError(res.error)
+          toast.error(res.error)
+        } else {
+          toast.success('Account registered. Awaiting admin approval.')
+        }
       } catch {
-        setError('An unexpected error occurred. Please try again.')
+        const msg = 'An unexpected error occurred. Please try again.'
+        setError(msg)
+        toast.error(msg)
       }
     })
   }

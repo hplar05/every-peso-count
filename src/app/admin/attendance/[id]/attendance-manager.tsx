@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateSession, saveAttendance } from '../actions'
 import { CheckCircle2, XCircle, AlertCircle, Save } from 'lucide-react'
+import { toast } from 'sonner'
 
 export function AttendanceManager({ session, kagawads, initialAttendance }: { session: any, kagawads: any[], initialAttendance: any[] }) {
   const router = useRouter()
@@ -28,8 +29,7 @@ export function AttendanceManager({ session, kagawads, initialAttendance }: { se
   const handleSaveAttendance = async () => {
     setIsSaving(true)
     setSaveMessage(null)
-    
-    // Convert state mapping back to array of records
+
     const recordsToSave = Object.entries(attendanceState).map(([official_id, status]) => ({
       official_id,
       status
@@ -38,8 +38,10 @@ export function AttendanceManager({ session, kagawads, initialAttendance }: { se
     const res = await saveAttendance(session.id, recordsToSave)
     if (res.error) {
       setSaveMessage({ type: 'error', text: res.error })
+      toast.error(res.error)
     } else {
       setSaveMessage({ type: 'success', text: 'Attendance records saved successfully.' })
+      toast.success('Attendance saved.')
       router.refresh()
     }
     setIsSaving(false)

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { updateFeedback } from '../actions'
+import { toast } from 'sonner'
 
 export function FeedbackManager({ feedback }: { feedback: any }) {
   const [isPending, startTransition] = useTransition()
@@ -18,9 +19,14 @@ export function FeedbackManager({ feedback }: { feedback: any }) {
         const res = await updateFeedback(feedback.id, formData)
         if (res?.error) {
           setError(res.error)
+          toast.error(res.error)
+        } else {
+          toast.success('Feedback response saved.')
         }
       } catch (err) {
-        setError('An unexpected error occurred. Please try again.')
+        const msg = 'An unexpected error occurred. Please try again.'
+        setError(msg)
+        toast.error(msg)
       }
     })
   }

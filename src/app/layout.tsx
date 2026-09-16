@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -27,7 +28,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${nunito.variable} h-full antialiased font-sans`}
     >
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>{children}</body>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        {children}
+        <Toaster position="top-right" richColors closeButton duration={4000} />
+      </body>
     </html>
   );
 }

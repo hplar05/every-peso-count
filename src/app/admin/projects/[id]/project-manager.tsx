@@ -4,6 +4,7 @@ import { useActionState, useState } from 'react'
 import { updateProject, createMilestone, updateMilestone, deleteMilestone } from '../actions'
 import { Trash2, Edit, Check, X, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-PH', {
@@ -19,15 +20,21 @@ export function ProjectManager({ project, initialMilestones }: { project: any, i
   
   // Project Edit State
   const [projectState, projectAction, isProjectPending] = useActionState(async (prevState: any, formData: FormData) => {
-    return await updateProject(project.id, formData)
+    const res = await updateProject(project.id, formData)
+    if (res.success) toast.success('Project updated successfully.')
+    else if (res.error) toast.error(res.error)
+    return res
   }, { error: '', success: undefined } as { error: string; success?: undefined } | { success: boolean; error?: undefined })
 
   // Milestone Add State
   const [milestoneState, milestoneAction, isMilestonePending] = useActionState(async (prevState: any, formData: FormData) => {
     const res = await createMilestone(project.id, formData)
     if (res.success) {
+      toast.success('Milestone added.')
       setIsAddingMilestone(false)
       router.refresh()
+    } else if (res.error) {
+      toast.error(res.error)
     }
     return res
   }, { error: '', success: undefined } as { error: string; success?: undefined } | { success: boolean; error?: undefined })
@@ -36,14 +43,18 @@ export function ProjectManager({ project, initialMilestones }: { project: any, i
   const [editingMilestoneId, setEditingMilestoneId] = useState<string | null>(null)
 
   const handleUpdateMilestone = async (id: string, formData: FormData) => {
-    await updateMilestone(id, project.id, formData)
+    const res = await updateMilestone(id, project.id, formData)
+    if (res?.success) toast.success('Milestone updated.')
+    else if (res?.error) toast.error(res.error)
     setEditingMilestoneId(null)
     router.refresh()
   }
 
   const handleDeleteMilestone = async (id: string) => {
     if (confirm('Are you sure you want to delete this milestone?')) {
-      await deleteMilestone(id, project.id)
+      const res = await deleteMilestone(id, project.id)
+      if (res?.success) toast.success('Milestone deleted.')
+      else if (res?.error) toast.error(res.error)
       router.refresh()
     }
   }

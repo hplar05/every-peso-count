@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { createProject } from '../actions'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+import { toast } from 'sonner'
 
 const initialState: { error: string; success?: undefined; id?: undefined } | { success: boolean; id: any; error?: undefined } = { error: '', success: undefined, id: undefined }
 
@@ -13,7 +14,10 @@ export default function NewProjectPage() {
   const [state, formAction, isPending] = useActionState(async (prevState: any, formData: FormData) => {
     const res = await createProject(formData)
     if (res.success && res.id) {
+      toast.success('Project created successfully.')
       router.push(`/admin/projects/${res.id}`)
+    } else if (res.error) {
+      toast.error(res.error)
     }
     return res
   }, initialState)

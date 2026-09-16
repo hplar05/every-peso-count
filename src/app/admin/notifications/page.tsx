@@ -3,6 +3,7 @@
 import { useActionState } from 'react'
 import { sendNotification } from './actions'
 import { Bell, Send } from 'lucide-react'
+import { toast } from 'sonner'
 
 const initialState: { error: string; success?: undefined } | { success: boolean; error?: undefined } = { error: '', success: undefined }
 
@@ -10,9 +11,11 @@ export default function NotificationsPage() {
   const [state, formAction, isPending] = useActionState(async (prevState: any, formData: FormData) => {
     const res = await sendNotification(formData)
     if (res.success) {
-      // Reset form via JS if needed, or just let the success state show
+      toast.success('Announcement sent successfully.')
       const form = document.getElementById('notification-form') as HTMLFormElement
       if (form) form.reset()
+    } else if (res.error) {
+      toast.error(res.error)
     }
     return res
   }, initialState)

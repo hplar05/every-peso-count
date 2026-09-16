@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { createClient } from '@/lib/supabase/client'
 import { createBudgetEntry } from '../actions'
+import { toast } from 'sonner'
 
 const budgetEntrySchema = z.object({
   project_id: z.string().min(1, "Please select a project"),
@@ -64,11 +65,15 @@ export default function NewBudgetEntryPage() {
       const res = await createBudgetEntry(data)
       if (res.error) {
         setServerError(res.error)
+        toast.error(res.error)
       } else {
+        toast.success('Budget entry created successfully.')
         router.push('/admin/budget')
       }
     } catch (err: any) {
-      setServerError(err.message || 'An unexpected error occurred')
+      const msg = err.message || 'An unexpected error occurred'
+      setServerError(msg)
+      toast.error(msg)
     } finally {
       setIsSubmitting(false)
     }

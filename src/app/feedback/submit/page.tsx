@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { submitFeedback } from '../actions'
 import Link from 'next/link'
 import { ArrowLeft, CheckCircle2, ShieldAlert } from 'lucide-react'
+import { toast } from 'sonner'
 
 export default function SubmitFeedbackPage() {
   const [error, setError] = useState<string | null>(null)
@@ -20,8 +21,10 @@ export default function SubmitFeedbackPage() {
     
     if (result.error) {
       setError(result.error)
+      toast.error(result.error)
     } else if (result.success && result.tracking_code) {
       setTrackingCode(result.tracking_code)
+      toast.success('Feedback submitted. Your tracking code has been generated.')
     }
     
     setIsPending(false)
