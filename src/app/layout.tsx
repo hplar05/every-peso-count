@@ -9,6 +9,7 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://every-peso-count.vercel.app'),
   title: {
     default: "Every Peso Counts - Barangay Bella Luz",
     template: "%s | Barangay Bella Luz"
