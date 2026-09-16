@@ -28,7 +28,7 @@ export default async function GenerateReportPage({
 
   // Verify auth
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  if (!user) redirect('/login/admin')
 
   const { data: currentUser } = await supabase
     .from('officials')

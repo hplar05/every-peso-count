@@ -11,7 +11,7 @@ export default async function SessionDetailsPage({ params }: { params: Promise<{
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  if (!user) redirect('/login/admin')
 
   // Fetch session details
   const { data: session } = await supabase

@@ -94,6 +94,7 @@ export default function RegisterPage() {
               >
                 <option value="secretary">Secretary</option>
                 <option value="kagawad">Kagawad (Council Member)</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
 

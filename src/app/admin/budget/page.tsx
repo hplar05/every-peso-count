@@ -9,7 +9,7 @@ export default async function BudgetPage() {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  if (!user) redirect('/login/admin')
 
   const { data: currentUser } = await supabase
     .from('officials')

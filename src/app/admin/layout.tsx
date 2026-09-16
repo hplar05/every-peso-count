@@ -28,7 +28,7 @@ export default async function AdminLayout({
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/login')
+    redirect('/login/admin')
   }
 
   // Fetch official profile
@@ -40,7 +40,7 @@ export default async function AdminLayout({
 
   if (!official) {
     await supabase.auth.signOut()
-    redirect('/login')
+    redirect('/login/admin')
   }
 
   if (official.status === 'pending') {
