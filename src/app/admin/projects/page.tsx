@@ -1,8 +1,13 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Plus, Eye, Edit } from 'lucide-react'
 import { ProjectList } from './project-list'
+
+export const metadata = {
+  title: "Projects",
+  description: "Manage barangay infrastructure and community projects.",
+}
 
 export default async function ProjectsPage() {
   const supabase = await createClient()

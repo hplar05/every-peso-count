@@ -2,6 +2,12 @@ import { Shield, UserCheck, Eye, MessageSquare } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
+export const metadata = {
+  title: "Every Peso Counts - Barangay Bella Luz",
+  description: "Barangay Bella Luz public transparency portal. Track projects, view budget allocations, and submit feedback to your local government.",
+}
+
+
 export default function Home() {
   const currentDate = new Date().toLocaleDateString('en-US', {
     month: 'long',

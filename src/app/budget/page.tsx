@@ -1,8 +1,13 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Wallet, Home, Flag, Info, Users } from 'lucide-react'
 import { BudgetCharts } from '../admin/budget/budget-charts'
+
+export const metadata = {
+  title: "Budget Transparency",
+  description: "View how Barangay Bella Luz allocates and spends public funds.",
+}
 
 // Revalidate every 60 seconds (ISR) so the page stays fresh without blocking every request
 export const revalidate = 60

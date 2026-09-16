@@ -1,6 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { FolderKanban, MessageSquare, CalendarDays, AlertCircle } from 'lucide-react'
+
+export const metadata = {
+  title: "Dashboard",
+  description: "Barangay Bella Luz admin dashboard overview.",
+}
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient()

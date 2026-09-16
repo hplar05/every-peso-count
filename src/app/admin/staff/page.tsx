@@ -1,7 +1,12 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { deactivateAccount } from '../actions'
 import { ShieldAlert } from 'lucide-react'
+
+export const metadata = {
+  title: "Staff Accounts",
+  description: "Manage barangay staff and official accounts.",
+}
 
 export default async function StaffAccountsPage() {
   const supabase = await createClient()

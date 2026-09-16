@@ -1,8 +1,13 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Plus, Eye, Edit, CalendarDays } from 'lucide-react'
 import { SessionList } from './session-list'
+
+export const metadata = {
+  title: "Attendance",
+  description: "Manage Sangguniang Barangay session attendance records.",
+}
 
 export default async function SessionsPage() {
   const supabase = await createClient()

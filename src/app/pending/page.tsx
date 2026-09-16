@@ -1,5 +1,10 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import Image from 'next/image'
+
+export const metadata = {
+  title: "Pending Approval",
+  description: "Your account is awaiting administrator review.",
+}
 
 export default async function PendingPage() {
   const supabase = await createClient()

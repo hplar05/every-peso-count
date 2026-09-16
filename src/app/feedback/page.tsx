@@ -1,7 +1,12 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Home, MessageSquare, Search, Send, CheckCircle2 } from 'lucide-react'
+
+export const metadata = {
+  title: "Feedback Hub",
+  description: "Submit feedback or check the status of your request to Barangay Bella Luz.",
+}
 
 export default async function PublicFeedbackPage() {
   const supabase = await createClient()

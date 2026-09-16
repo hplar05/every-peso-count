@@ -1,9 +1,14 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { BudgetCharts } from './budget-charts'
 import { BudgetLedger } from './budget-ledger'
+
+export const metadata = {
+  title: "Budget Ledger",
+  description: "Track barangay budget allocations and expenditures.",
+}
 
 export default async function BudgetPage() {
   const supabase = await createClient()

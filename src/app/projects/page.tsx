@@ -1,7 +1,12 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import Image from 'next/image'
 import { FolderKanban, ArrowRight, Home, Wallet, Users } from 'lucide-react'
+
+export const metadata = {
+  title: "Projects",
+  description: "Browse all Barangay Bella Luz community and infrastructure projects.",
+}
 
 // Revalidate every 60 seconds (ISR)
 export const revalidate = 60

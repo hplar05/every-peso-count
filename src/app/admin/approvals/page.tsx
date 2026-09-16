@@ -1,7 +1,12 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { approveAccount, rejectAccount } from '../actions'
 import { Check, X } from 'lucide-react'
+
+export const metadata = {
+  title: "Pending Approvals",
+  description: "Review and approve new staff account registrations.",
+}
 
 export default async function ApprovalsPage() {
   const supabase = await createClient()

@@ -1,5 +1,10 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import Image from 'next/image'
+
+export const metadata = {
+  title: "Registration Declined",
+  description: "Your account registration was not approved.",
+}
 
 export default function RejectedPage() {
   return (

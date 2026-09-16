@@ -1,6 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { Clock, FileText, CheckCircle2, ChevronRight } from 'lucide-react'
+
+export const metadata = {
+  title: "Feedback",
+  description: "Review and respond to citizen feedback submissions.",
+}
 
 export default async function FeedbackInboxPage() {
   const supabase = await createClient()

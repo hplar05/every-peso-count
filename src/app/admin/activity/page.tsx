@@ -1,6 +1,11 @@
 ﻿import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 
+export const metadata = {
+  title: "Activity Log",
+  description: "View all administrative actions and audit trail.",
+}
+
 const ACTION_MAP: Record<string, { letter: string; color: string }> = {
   approved: { letter: "A", color: "#2E7D32" },
   rejected: { letter: "R", color: "#DC2626" },
