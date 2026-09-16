@@ -1,36 +1,55 @@
 'use client'
 
-import { useActionState, useState } from 'react'
+import { useState, useTransition } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
 import { register } from './actions'
 
-const initialState = { error: null as string | null }
-
 export default function RegisterPage() {
-  const [state, formAction, isPending] = useActionState(async (prevState: any, formData: FormData) => {
-    return await register(formData)
-  }, initialState)
-
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [role, setRole] = useState('secretary')
+  const [position, setPosition] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+
+    const formData = new FormData()
+    formData.set('name', name)
+    formData.set('email', email)
+    formData.set('password', password)
+    formData.set('role', role)
+    formData.set('position', position)
+
+    startTransition(async () => {
+      try {
+        const res = await register(formData)
+        if (res?.error) setError(res.error)
+      } catch {
+        setError('An unexpected error occurred. Please try again.')
+      }
+    })
+  }
 
   return (
     <div className="min-h-screen bg-[#F5F7FA] flex flex-col">
-
-
-      {/* Main Content */}
       <main className="flex-1 flex items-center justify-center p-4 py-8">
         <div className="w-full max-w-md bg-white border border-gray-200 p-8 shadow-sm">
-            <div className="flex flex-col items-center justify-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-white overflow-hidden flex items-center justify-center shadow-sm border border-gray-100 mb-4">
-                <Image src="/logo.jpg" alt="Barangay Bella Luz Logo" width={64} height={64} className="object-cover" />
-              </div>
-              <h1 className="text-xl font-medium text-[#172033] tracking-tight text-center">Staff Registration</h1>
-              <p className="text-sm text-gray-500 mt-1 text-center">Create your official portal account</p>
+          <div className="flex flex-col items-center justify-center mb-6">
+            <div className="w-16 h-16 rounded-full bg-white overflow-hidden flex items-center justify-center shadow-sm border border-gray-100 mb-4">
+              <Image src="/logo.jpg" alt="Barangay Bella Luz Logo" width={64} height={64} className="object-cover" />
             </div>
+            <h1 className="text-xl font-medium text-[#172033] tracking-tight text-center">Staff Registration</h1>
+            <p className="text-sm text-gray-500 mt-1 text-center">Create your official portal account</p>
+          </div>
 
-          <form action={formAction} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-[#172033] mb-1.5" htmlFor="name">
                 Full Name
@@ -40,6 +59,8 @@ export default function RegisterPage() {
                 name="name"
                 type="text"
                 required
+                value={name}
+                onChange={e => setName(e.target.value)}
                 className="w-full px-3 py-2 bg-[#F5F7FA] border border-gray-300 rounded-sm focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] text-sm"
                 placeholder="Juan Dela Cruz"
               />
@@ -54,6 +75,8 @@ export default function RegisterPage() {
                 name="email"
                 type="email"
                 required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 className="w-full px-3 py-2 bg-[#F5F7FA] border border-gray-300 rounded-sm focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] text-sm"
                 placeholder="juan@example.com"
               />
@@ -67,9 +90,11 @@ export default function RegisterPage() {
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   required
                   minLength={6}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                   className="w-full px-3 py-2 bg-[#F5F7FA] border border-gray-300 rounded-sm focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] text-sm pr-10"
                 />
                 <button
@@ -90,6 +115,8 @@ export default function RegisterPage() {
                 id="role"
                 name="role"
                 required
+                value={role}
+                onChange={e => setRole(e.target.value)}
                 className="w-full px-3 py-2 bg-[#F5F7FA] border border-gray-300 rounded-sm focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] text-sm"
               >
                 <option value="secretary">Secretary</option>
@@ -106,14 +133,16 @@ export default function RegisterPage() {
                 id="position"
                 name="position"
                 type="text"
+                value={position}
+                onChange={e => setPosition(e.target.value)}
                 className="w-full px-3 py-2 bg-[#F5F7FA] border border-gray-300 rounded-sm focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] text-sm"
                 placeholder="e.g. Committee on Health"
               />
             </div>
 
-            {state?.error && (
+            {error && (
               <div className="p-3 bg-red-50 border-l-4 border-red-600 text-red-800 text-sm">
-                {state.error}
+                {error}
               </div>
             )}
 
@@ -124,7 +153,7 @@ export default function RegisterPage() {
             >
               {isPending ? 'Registering...' : 'Register Account'}
             </button>
-            
+
             <div className="text-center mt-4">
               <Link href="/" className="text-sm text-[#2563EB] hover:underline">
                 Already have an account? Sign in to your portal
@@ -136,3 +165,4 @@ export default function RegisterPage() {
     </div>
   )
 }
+
