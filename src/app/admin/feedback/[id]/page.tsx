@@ -66,7 +66,7 @@ export default async function FeedbackDetailPage({ params }: { params: Promise<{
               </div>
               <div>
                 <div className="text-xs text-gray-500 mb-1">Email</div>
-                <div className="font-medium text-[#172033]">{feedback.email || <span className="text-gray-400 italic">Not provided</span>}</div>
+                <div className="font-medium text-[#172033]">{feedback.resident_email || <span className="text-gray-400 italic">Not provided</span>}</div>
               </div>
               <div>
                 <div className="text-xs text-gray-500 mb-1">Tracking Code</div>

@@ -52,7 +52,7 @@ export async function createSession(formData: FormData) {
   sendEmail({
     to: ['brgy.bellaluz@example.com'],
     subject: `New Session Scheduled: ${title}`,
-    html: `<div style="font-family: sans-serif; padding: 20px;"><h2>Session Scheduled</h2><p>A new ${type} session has been scheduled for <strong>${session_date}</strong>.</p><p>Agenda: ${agenda}</p></div>`
+    text: `Session Scheduled\n\nA new ${type} session has been scheduled for ${session_date}.\n\nAgenda: ${agenda}`
   }).catch(err => console.error('[sendEmail] Failed to notify on session create:', err))
 
   revalidatePath('/admin/attendance')

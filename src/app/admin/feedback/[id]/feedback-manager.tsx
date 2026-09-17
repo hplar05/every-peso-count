@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { updateFeedback } from '../actions'
 import { toast } from 'sonner'
 
 export function FeedbackManager({ feedback }: { feedback: any }) {
+  const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   
@@ -22,6 +24,8 @@ export function FeedbackManager({ feedback }: { feedback: any }) {
           toast.error(res.error)
         } else {
           toast.success('Feedback response saved.')
+          router.push('/admin/feedback')
+          router.refresh()
         }
       } catch (err) {
         const msg = 'An unexpected error occurred. Please try again.'

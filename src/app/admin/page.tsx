@@ -1,6 +1,7 @@
-﻿import { createClient } from '@/lib/supabase/server'
-import Link from 'next/link'
-import { FolderKanban, MessageSquare, CalendarDays, AlertCircle } from 'lucide-react'
+import { createClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation"
+import Link from "next/link"
+import { FolderKanban, MessageSquare, CalendarDays, AlertCircle } from "lucide-react"
 
 export const metadata = {
   title: "Dashboard",
@@ -10,15 +11,20 @@ export const metadata = {
 export default async function AdminDashboardPage() {
   const supabase = await createClient()
 
-  // Fetch actual stats concurrently
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect("/login/admin")
+
+  const { data: me } = await supabase.from("officials").select("role").eq("id", user.id).single()
+  if (me?.role === "kagawad") redirect("/admin/feedback")
+
   const [
     { count: activeProjects },
     { count: pendingFeedback },
     { data: nextSession }
   ] = await Promise.all([
-    supabase.from('projects').select('*', { count: 'exact', head: true }).eq('status', 'ongoing'),
-    supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-    supabase.from('sessions').select('title, session_date').eq('status', 'scheduled').order('session_date', { ascending: true }).limit(1).maybeSingle()
+    supabase.from("projects").select("*", { count: "exact", head: true }).eq("status", "ongoing"),
+    supabase.from("feedback").select("*", { count: "exact", head: true }).eq("status", "pending"),
+    supabase.from("sessions").select("title, session_date").eq("status", "scheduled").order("session_date", { ascending: true }).limit(1).maybeSingle()
   ])
 
   return (
@@ -29,7 +35,7 @@ export default async function AdminDashboardPage() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Link href="/admin/projects" className="bg-white border border-gray-200 p-6 rounded-sm shadow-sm hover:border-[#2563EB] transition-colors group">
+        <Link href="/admin/projects" className="bg-white border border-gray-200 p-6 rounded-sm hover:border-[#2563EB] transition-colors group">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-[#F5F7FA] rounded-sm flex items-center justify-center text-[#2563EB] group-hover:bg-blue-50 transition-colors">
               <FolderKanban size={18} />
@@ -39,17 +45,17 @@ export default async function AdminDashboardPage() {
           <p className="text-3xl font-medium text-[#2563EB]">{activeProjects ?? 0}</p>
           <p className="text-xs text-gray-400 mt-1">Currently ongoing</p>
         </Link>
-        
-        <Link href="/admin/feedback" className="bg-white border border-gray-200 p-6 rounded-sm shadow-sm hover:border-[#F4B942] transition-colors group">
+
+        <Link href="/admin/feedback" className="bg-white border border-gray-200 p-6 rounded-sm hover:border-[#2563EB] transition-colors group">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 bg-[#F5F7FA] rounded-sm flex items-center justify-center text-[#F4B942] group-hover:bg-yellow-50 transition-colors">
+            <div className="w-8 h-8 bg-[#F5F7FA] rounded-sm flex items-center justify-center text-[#2563EB] group-hover:bg-blue-50 transition-colors">
               <MessageSquare size={18} />
             </div>
             <h3 className="font-medium text-[#172033]">Pending Feedback</h3>
           </div>
-          <p className="text-3xl font-medium text-[#F4B942]">{pendingFeedback ?? 0}</p>
+          <p className="text-3xl font-medium text-[#2563EB]">{pendingFeedback ?? 0}</p>
           {(pendingFeedback ?? 0) > 0 && (
-            <p className="text-xs text-orange-500 mt-1 flex items-center gap-1">
+            <p className="text-xs text-[#2563EB] mt-1 flex items-center gap-1">
               <AlertCircle size={11} /> Requires attention
             </p>
           )}
@@ -58,18 +64,18 @@ export default async function AdminDashboardPage() {
           )}
         </Link>
 
-        <Link href="/admin/attendance" className="bg-white border border-gray-200 p-6 rounded-sm shadow-sm hover:border-green-400 transition-colors group">
+        <Link href="/admin/attendance" className="bg-white border border-gray-200 p-6 rounded-sm hover:border-[#2563EB] transition-colors group">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 bg-[#F5F7FA] rounded-sm flex items-center justify-center text-[#2E7D32] group-hover:bg-green-50 transition-colors">
+            <div className="w-8 h-8 bg-[#F5F7FA] rounded-sm flex items-center justify-center text-[#2563EB] group-hover:bg-blue-50 transition-colors">
               <CalendarDays size={18} />
             </div>
             <h3 className="font-medium text-[#172033]">Next Session</h3>
           </div>
           {nextSession ? (
             <>
-              <p className="text-base font-medium text-[#2E7D32] line-clamp-1">{nextSession.title}</p>
+              <p className="text-base font-medium text-[#2563EB] line-clamp-1">{nextSession.title}</p>
               <p className="text-xs text-gray-400 mt-1">
-                {new Date(nextSession.session_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                {new Date(nextSession.session_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
               </p>
             </>
           ) : (

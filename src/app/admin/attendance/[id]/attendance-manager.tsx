@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { updateSession, saveAttendance } from '../actions'
 import { CheckCircle2, XCircle, AlertCircle, Save } from 'lucide-react'
 import { toast } from 'sonner'
+import { QRScanner } from './qr-scanner'
+import { MinutesUploader } from './minutes-uploader'
 
 export function AttendanceManager({ session, kagawads, initialAttendance }: { session: any, kagawads: any[], initialAttendance: any[] }) {
   const router = useRouter()
@@ -24,6 +26,17 @@ export function AttendanceManager({ session, kagawads, initialAttendance }: { se
 
   const handleStatusChange = (officialId: string, status: string) => {
     setAttendanceState(prev => ({ ...prev, [officialId]: status }))
+  }
+
+  const handleQRScanned = (officialId: string) => {
+    // Find if this UUID matches any of our kagawads
+    const official = kagawads.find((k: any) => k.id === officialId)
+    if (official) {
+      setAttendanceState(prev => ({ ...prev, [officialId]: 'present' }))
+      toast.success(`${official.name} marked as present`)
+    } else {
+      toast.error('QR code not recognized. Make sure the official is registered.')
+    }
   }
 
   const handleSaveAttendance = async () => {
@@ -82,6 +95,7 @@ export function AttendanceManager({ session, kagawads, initialAttendance }: { se
               </div>
             ) : (
               <div>
+                <QRScanner sessionId={session.id} onScanned={handleQRScanned} />
                 <table className="w-full text-left text-sm">
                   <thead className="bg-[#F5F7FA] border-b border-gray-200 text-[#1E3A5F]">
                     <tr>
@@ -212,6 +226,10 @@ export function AttendanceManager({ session, kagawads, initialAttendance }: { se
                 </button>
               </div>
             </form>
+            
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              <MinutesUploader session={session} />
+            </div>
           </div>
         )}
       </div>

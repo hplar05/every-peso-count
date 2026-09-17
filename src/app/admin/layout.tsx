@@ -68,47 +68,37 @@ export default async function AdminLayout({
         </div>
 
         <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          {/* Main Links - Accessible based on role */}
-          {(role === 'admin' || role === 'secretary') && (
+          {role === 'kagawad' ? (
+            // Kagawad: feedback and announcements only
+            <>
+              <SidebarLink href="/admin/feedback" icon={<MessageSquare size={18} />} label="Feedback" />
+              <SidebarLink href="/admin/notifications" icon={<Bell size={18} />} label="Announcements" />
+            </>
+          ) : (
+            // Admin & Secretary: full sidebar
             <>
               <SidebarLink href="/admin" icon={<LayoutDashboard size={18} />} label="Dashboard" />
               <SidebarLink href="/admin/projects" icon={<FolderKanban size={18} />} label="Projects" />
               <SidebarLink href="/admin/budget" icon={<Wallet size={18} />} label="Budget" />
               <SidebarLink href="/admin/attendance" icon={<CalendarCheck size={18} />} label="Attendance" />
               <SidebarLink href="/admin/reports" icon={<FileBarChart size={18} />} label="Reports" />
-            </>
-          )}
+              <SidebarLink href="/admin/feedback" icon={<MessageSquare size={18} />} label="Feedback" />
+              <SidebarLink href="/admin/notifications" icon={<Bell size={18} />} label="Announcements" />
 
-          {/* Feedback & Notifications - Everyone has access */}
-          <SidebarLink href="/admin/feedback" icon={<MessageSquare size={18} />} label="Feedback" />
-          <SidebarLink href="/admin/notifications" icon={<Bell size={18} />} label="Announcements" />
-
-          {/* Admin & Secretary Management Links */}
-          {(role === 'admin' || role === 'secretary') && (
-            <div className="pt-4 mt-4 border-t border-white/10">
-              <div className="px-3 mb-2 text-xs font-semibold text-white/50 uppercase tracking-wider">
-                Management
+              <div className="pt-4 mt-4 border-t border-white/10">
+                <div className="px-3 mb-2 text-xs font-semibold text-white/50 uppercase tracking-wider">
+                  Management
+                </div>
+                <SidebarLink href="/admin/approvals" icon={<ClipboardCheck size={18} />} label="Pending Approvals" />
+                {role === 'admin' && (
+                  <>
+                    <SidebarLink href="/admin/staff" icon={<Users size={18} />} label="Staff Accounts" />
+                    <SidebarLink href="/admin/analytics" icon={<Activity size={18} />} label="Analytics" />
+                    <SidebarLink href="/admin/activity" icon={<Activity size={18} />} label="Activity Log" />
+                  </>
+                )}
               </div>
-              <SidebarLink 
-                href="/admin/approvals" 
-                icon={<ClipboardCheck size={18} />} 
-                label="Pending Approvals" 
-              />
-              {role === 'admin' && (
-                <>
-                  <SidebarLink 
-                    href="/admin/staff" 
-                    icon={<Users size={18} />} 
-                    label="Staff Accounts" 
-                  />
-                  <SidebarLink 
-                    href="/admin/activity" 
-                    icon={<Activity size={18} />} 
-                    label="Activity Log" 
-                  />
-                </>
-              )}
-            </div>
+            </>
           )}
         </div>
 

@@ -1,18 +1,23 @@
-'use server'
+"use server"
 
-import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { createClient } from "@/lib/supabase/server"
+import { revalidatePath } from "next/cache"
+import { Filter } from "bad-words"
 
-const BAD_WORDS = ['fuck', 'shit', 'bitch', 'asshole', 'crap', 'bastard', 'damn']
+const filter = new Filter()
 
-function isProfane(text: string) {
-  const normalized = text.toLowerCase()
-  return BAD_WORDS.some(word => normalized.includes(word))
-}
+// Add Tagalog and Ilocano profanity list
+filter.addWords(
+  'putangina', 'tangina', 'tngina', 'gago', 'tanga', 'bobo', 'inutil', 
+  'ulol', 'pota', 'puta', 'tae', 'kantot', 'syota', 'bayag', 'titi', 
+  'puke', 'pekpek', 'burat', 'siraulo', 'bwisit', 'punyeta', 'leche',
+  'lintik', 'hindot', 'pakshet', 'ukinnam', 'okinam', 'kiki', 'gaga',
+  'yawa', 'pisti', 'giatay', 'tang ina', 'putang ina', 'putragis', 'tarantado'
+)
 
 function generateTrackingCode() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  let result = ''
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  let result = ""
   for (let i = 0; i < 8; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length))
   }
@@ -20,66 +25,63 @@ function generateTrackingCode() {
 }
 
 export async function submitFeedback(formData: FormData) {
-  const message = formData.get('message') as string
-  const resident_name = (formData.get('resident_name') as string)?.trim() || null
-  const email = (formData.get('email') as string)?.trim() || null
+  const message = (formData.get("message") as string)?.trim()
+  const resident_name = (formData.get("resident_name") as string)?.trim() || null
+  const resident_email = (formData.get("resident_email") as string)?.trim() || null
 
-  // 1. Basic Validation
-  if (!message || message.trim().length < 5) {
-    return { error: 'Message must be at least 5 characters long.' }
+  // 1. Basic validation
+  if (!message || message.length < 10) {
+    return { error: "Message must be at least 10 characters long." }
   }
-  if (message.trim().length > 2000) {
-    return { error: 'Message must be under 2000 characters.' }
+  if (message.length > 2000) {
+    return { error: "Message must be under 2000 characters." }
   }
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return { error: 'Please enter a valid email address.' }
+  if (/^\s*$/.test(message)) {
+    return { error: "Please enter a valid message." }
+  }
+  if (resident_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(resident_email)) {
+    return { error: "Please enter a valid email address." }
   }
 
-  // 2. Profanity Validation
-  if (isProfane(message)) {
-    return { error: "Your message contains inappropriate content and wasn't submitted. Please revise and try again." }
+  // 2. Profanity check (server-side, using bad-words package)
+  if (filter.isProfane(message)) {
+    return { error: "Your message contains inappropriate content and was not submitted. Please revise and try again." }
   }
 
   const supabase = await createClient()
   const tracking_code = generateTrackingCode()
 
-  // 3. Insert into Database
-  const { error } = await supabase
-    .from('feedback')
-    .insert({
-      message: message.trim(),
-      resident_name,
-      email,
-      tracking_code
-    })
+  const { error } = await supabase.from("feedback").insert({
+    message,
+    resident_name,
+    resident_email,
+    tracking_code,
+    status: "pending",
+  })
 
   if (error) {
-    console.error('[submitFeedback] Insertion error:', error)
-    return { error: 'Failed to submit feedback. Please try again later.' }
+    console.error("[submitFeedback] Error:", error)
+    return { error: "Failed to submit feedback. Please try again later." }
   }
 
-  revalidatePath('/admin/feedback')
+  revalidatePath("/admin/feedback")
+  revalidatePath("/feedback/board")
   return { success: true, tracking_code }
 }
 
 export async function checkFeedbackStatus(formData: FormData) {
-  const tracking_code = formData.get('tracking_code') as string
-  if (!tracking_code) return { error: 'Tracking code is required' }
+  const tracking_code = formData.get("tracking_code") as string
+  if (!tracking_code) return { error: "Tracking code is required" }
 
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('feedback')
-    .select(`
-      status,
-      response,
-      created_at,
-      officials ( name, role )
-    `)
-    .eq('tracking_code', tracking_code.toUpperCase().trim())
+    .from("feedback")
+    .select("status, response, created_at, officials ( name, role )")
+    .eq("tracking_code", tracking_code.toUpperCase().trim())
     .single()
 
   if (error || !data) {
-    return { error: 'Invalid tracking code or feedback not found.' }
+    return { error: "Invalid tracking code or feedback not found." }
   }
 
   return { success: true, data }

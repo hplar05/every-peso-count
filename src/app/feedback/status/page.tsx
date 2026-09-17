@@ -3,7 +3,8 @@
 import { useState, useTransition } from 'react'
 import { checkFeedbackStatus } from '../actions'
 import Link from 'next/link'
-import { ArrowLeft, Search, Clock, FileText, CheckCircle2 } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowLeft, Search, Clock, FileText, CheckCircle2, XCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function CheckFeedbackStatusPage() {
@@ -53,7 +54,12 @@ export default function CheckFeedbackStatusPage() {
     <div className="min-h-screen bg-[#F5F7FA] flex flex-col font-sans">
       <header className="bg-[#1E3A5F] py-4 px-6 shadow-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <h1 className="font-medium text-lg tracking-tight text-white">Barangay Bella Luz</h1>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-white overflow-hidden flex items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
+              <Image src="/logo.jpg" alt="Barangay Bella Luz Logo" width={32} height={32} className="object-cover" />
+            </div>
+            <h1 className="font-medium text-lg tracking-tight text-white">Barangay Bella Luz</h1>
+          </div>
           <Link href="/feedback" className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors">
             <ArrowLeft size={16} /> Back to Hub
           </Link>

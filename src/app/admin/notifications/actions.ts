@@ -45,14 +45,7 @@ export async function sendNotification(formData: FormData) {
     const emailRes = await sendEmail({
       to: ['brgy.bellaluz@example.com'], // Mock recipient since officials emails aren't stored
       subject: `Barangay Bella Luz Update: ${type}`,
-      html: `
-        <div style="font-family: sans-serif; max-w-md; margin: 0 auto; border: 1px solid #eee; padding: 20px;">
-          <h2 style="color: #1E3A5F; margin-top: 0;">${type}</h2>
-          <p style="color: #444; line-height: 1.5;">${message}</p>
-          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-          <p style="color: #888; font-size: 12px;">This is an official communication from Barangay Bella Luz.</p>
-        </div>
-      `
+      text: `${type}\n\n${message}\n\nThis is an official communication from Barangay Bella Luz.`
     })
     
     if (!emailRes.success) {

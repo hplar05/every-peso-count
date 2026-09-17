@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
@@ -22,11 +22,11 @@ export default async function SessionDetailsPage({ params }: { params: Promise<{
 
   if (!session) notFound()
 
-  // Fetch all approved Kagawads (council_members)
+  // Fetch all approved Kagawads (kagawads)
   const { data: kagawads } = await supabase
     .from('officials')
     .select('*')
-    .eq('role', 'council_member')
+    .eq('role', 'kagawad')
     .eq('status', 'approved')
     .order('name', { ascending: true })
 

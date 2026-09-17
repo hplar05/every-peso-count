@@ -101,7 +101,7 @@ export async function updateProject(id: string, formData: FormData) {
     sendEmail({
       to: ['brgy.bellaluz@example.com'],
       subject: `Project Updated: ${name}`,
-      html: `<div style="font-family: sans-serif; padding: 20px;"><h2>Project Update</h2><p>The project <strong>${name}</strong> has been updated.</p><p>Status: ${status}</p><p>Budget Allocated: ₱${budget_allocated.toLocaleString()}</p></div>`
+      text: `Project Update\n\nThe project ${name} has been updated.\nStatus: ${status}\nBudget Allocated: ₱${budget_allocated.toLocaleString()}`
     }).catch(err => console.error('[sendEmail] Failed to notify on project update:', err))
 
     revalidatePath('/admin/projects')
