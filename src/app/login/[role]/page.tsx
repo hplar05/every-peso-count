@@ -42,7 +42,9 @@ export default function LoginPage({ params }: { params: Promise<{ role: string }
           setError(res.error)
           toast.error(res.error)
         }
-      } catch {
+      } catch (err: any) {
+        // Next.js redirect() throws a NEXT_REDIRECT error — let it propagate
+        if (err?.digest?.startsWith('NEXT_REDIRECT')) throw err
         const msg = 'An unexpected error occurred. Please try again.'
         setError(msg)
         toast.error(msg)

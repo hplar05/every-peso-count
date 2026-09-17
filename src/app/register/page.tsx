@@ -37,7 +37,9 @@ export default function RegisterPage() {
         } else {
           toast.success('Account registered. Awaiting admin approval.')
         }
-      } catch {
+      } catch (err: any) {
+        // Next.js redirect() throws a NEXT_REDIRECT error — let it propagate
+        if (err?.digest?.startsWith('NEXT_REDIRECT')) throw err
         const msg = 'An unexpected error occurred. Please try again.'
         setError(msg)
         toast.error(msg)
